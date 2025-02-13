@@ -4,7 +4,7 @@ import random
 robobo = Robobo('localhost')  
 robobo.connect()
 
-robobo.moveTiltTo(90, 25)  
+robobo.moveTiltTo(100, 25)  
 
 def qrDetectedCallback():
     qr_data = robobo.readQR()
@@ -12,8 +12,8 @@ def qrDetectedCallback():
     if qr_data.id:
         print(f"QR detectado: {qr_data.id} a {distance} m")
     
-    if qr_data.id == "peligro izquierda" and distance> 33:
-        robobo.moveWheelsByTime(28.6, 18, 3.5)
+    if qr_data.id == "peligro izquierda" and distance> 30:
+        robobo.moveWheelsByTime(19.7, 11.5, 4.3)
         robobo.moveWheels(25, 25)
     if qr_data.id == "cruce-izquierda" and distance> 21:
         # aleatoriamente elige seguir recto o girar a la izquierda
@@ -23,10 +23,10 @@ def qrDetectedCallback():
                 robobo.moveWheels(20, 20)
             else:
                 print("Decisión: Girar a la izquierda")
-                robobo.moveWheelsByTime(20, 20, 5)  
-                robobo.moveWheelsByTime(20, -18,1)  # Gira a la izquierda
+                robobo.moveWheelsByTime(20, 20, 5.3)  
+                robobo.moveWheelsByTime(19.5, -18,1)  # Gira a la izquierda
                 robobo.moveWheels(20, 20)  # Sigue adelante después de girar
-    if qr_data.id == "peatones" and distance > 22:
+    if qr_data.id == "peatones" and distance > 21.5:
         robobo.moveWheels(0, 0)
         robobo.sayText("No hay peatones, podemos seguir")
         robobo.moveWheels(25, 25)
@@ -34,7 +34,7 @@ def qrDetectedCallback():
     if qr_data.id == "ceda" and distance > 25:
         robobo.stopMotors()
         robobo.disconnect()
-    robobo.wait(0.1)
+    robobo.wait(0.01)
 # Configurar el callback para detección de QR
 robobo.whenAQRCodeIsDetected(qrDetectedCallback)
 
