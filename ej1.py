@@ -4,9 +4,9 @@ from robobopy.utils.LED import LED
 from robobopy.utils.Color import Color
 from robobopy.utils.IR import IR
 # This creates an instance of the Robobo class with the indicated IP address
-robobo = Robobo('localhost')
+robobo = Robobo('10.20.25.162')
 robobo.connect()
-robobo.moveWheels(10, 10)
+robobo.moveWheels(5, 5)
 farIRValue2 = 20
 farIRValue3 = 80
 farIRValue4 = 120

@@ -5,7 +5,7 @@ from robobopy.utils.IR import IR
 from robobopy.utils.Sounds import Sounds
 from robobopy.utils.Emotions import Emotions
 
-robobo = Robobo('localhost')
+robobo = Robobo('10.20.25.162')
 robobo.connect()
 
 farIRValue = 85
