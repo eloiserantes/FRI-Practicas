@@ -19,9 +19,9 @@ def colordetectcallback():
         robobo.moveWheels(-3, 3)  
     elif color_blob.posx > 55:
         robobo.moveWheels(3, -3)  
-    if ir_distance > 1000: 
+    if ir_distance > 300: 
         print("Agarrando cilindro con el pusher...")
-        robobo.moveWheelsByTime(3, -3, 5) #implementar coger objeto
+        robobo.moveWheelsByTime(2, -2, 5) #implementar coger objeto
         print("Cilindro alcanzado, deteniendo motores.")
         robobo.stopMotors()
         robobo.disconnect()

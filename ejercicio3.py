@@ -3,7 +3,7 @@ from robobopy.utils.LED import LED
 from robobopy.utils.Color import Color
 from robobopy.utils.IR import IR
 
-robobo = Robobo('10.20.25.162')
+robobo = Robobo('localhost')
 robobo.connect()
 
 def tapDetectedCallback():

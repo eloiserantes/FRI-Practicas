@@ -2,7 +2,7 @@ from robobopy.Robobo import Robobo
 from robobopy.utils.Color import Color
 from robobopy.utils.IR import IR
 
-robobo = Robobo('10.20.25.162')  
+robobo = Robobo('localhost')  
 robobo.connect()
 
 robobo.moveTiltTo(100, 25)

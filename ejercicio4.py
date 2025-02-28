@@ -31,6 +31,12 @@ def qrDetectedCallback():
         robobo.sayText("No hay peatones, podemos seguir")
         robobo.moveWheels(25, 25)
         robobo.wait(3)
+
+    if qr_data.id == "velocidad10" and distance > 21.5:
+        robobo.sayText("Me pongo a velocidad 10")
+        robobo.moveWheels(10, 10)
+        robobo.wait(3)
+
     if qr_data.id == "ceda" and distance > 25:
         robobo.stopMotors()
         robobo.disconnect()
