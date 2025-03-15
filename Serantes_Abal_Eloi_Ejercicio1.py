@@ -5,7 +5,7 @@ from robobopy.utils.IR import IR
 # Configuración inicial
 robobo = Robobo('localhost')
 robobo.connect()
-robobo.moveTiltTo(100, 25)
+robobo.moveTiltTo(105, 25)
 
 robobo.moveWheels(10, -10)
 
