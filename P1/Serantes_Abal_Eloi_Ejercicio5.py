@@ -1,5 +1,3 @@
-# Autores: Jacobo Olmedo Sánchez y Eloi Serantes Abal
-
 from robobopy.Robobo import Robobo
 from robobopy.utils.Color import Color
 from robobopy.utils.IR import IR
@@ -20,11 +18,11 @@ def colordetectcallback():
         print("Objeto de frente")
         robobo.moveWheels(10, 10)
     elif color_blob.posx < 45:  
-        print("Objeto a la izquierda")
-        robobo.moveWheels(-3, 3)  
-    elif color_blob.posx > 55:
         print("Objeto a la derecha")
         robobo.moveWheels(3, -3)  
+    elif color_blob.posx > 55:
+        print("Objeto a la izquierda")
+        robobo.moveWheels(-3, 3)  
     
     if ir_distance > 100: 
         print("Cilindro alcanzado, deteniendo motores.")
@@ -37,5 +35,3 @@ robobo.whenANewColorBlobIsDetected(colordetectcallback)
 
 while True:
     robobo.wait(0.1)
-
-

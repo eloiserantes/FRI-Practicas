@@ -18,38 +18,24 @@ from robobopy.Robobo import Robobo
 from robobopy.utils.IR import IR
 
 
-def turn_right(robobo, speed, goal_angle):
+def turn_right(robobo, speed):
     robobo.moveWheels(-speed, speed)
     # Si pasa de 180º --> continua en -180, -179, ...
-    if goal_angle > 180:
-        goal_angle = goal_angle - 360
-        while 0 <= round(robobo.readOrientationSensor().yaw) <= 180:
-            robobo.wait(0.001)
-    while round(robobo.readOrientationSensor().yaw) < round(goal_angle):
-        robobo.wait(0.001)
+    robobo.wait(0.001)
 
 
-def turn_left(robobo, speed, goal_angle):
+def turn_left(robobo, speed):
     robobo.moveWheels(speed, -speed)
-    # Si pasa de -180º --> continua en 180, 179, ...
-    if goal_angle < -180:
-        goal_angle = goal_angle + 360
-        while -180 <= round(robobo.readOrientationSensor().yaw) <= 0:
-            robobo.wait(0.001)
-    while round(robobo.readOrientationSensor().yaw) > round(goal_angle):
-        robobo.wait(0.001)
+    robobo.wait(0.001)
 
 
 def turn_degrees(robobo, degrees, speed):
-    orientation = robobo.readOrientationSensor()
-    # Se parte de la posición actual y se suman los grados a girar
-    goal_angle = orientation.yaw + degrees
     # giro a la derecha
     if degrees > 0:
-        turn_right(robobo, speed, goal_angle)
+        turn_right(robobo, speed)
     # giro a la izquierda
     else:
-        turn_left(robobo, speed, goal_angle)
+        turn_left(robobo, speed)
     robobo.stopMotors()
 
 
