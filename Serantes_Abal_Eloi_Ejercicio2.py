@@ -6,77 +6,67 @@ from robobopy.utils.IR import IR
 robobo = Robobo('localhost')
 robobo.connect()
 robobo.moveTiltTo(105, 25)
+robobo.moveWheels(8, -8)
+# Parámetros de control
+kp_distance = 0.2  # Ganancia proporcional para la velocidad de aproximación
+kp_posx = 0.55       # Ganancia proporcional para la posición en el eje X
+ki_posx = 0.0005    # Ganancia integral para la posición en el eje X
+kd_posx = 0.02      # Ganancia derivativa para la posición en el eje X
+goal_distance = 184  # Distancia objetivo en mm
+goal_posx = 50       # Posición objetivo en el eje X (centro de la cámara)
 
-robobo.moveWheels(10, -10)
-
-# Parámetros de control PID
-kp = 0.05  # Ganancia proporcional
-ki = 0  # Ganancia integral
-kd = 0.01  # Ganancia derivativa
-
-# Variables de estado para el PID
-integral = 0
-last_error = 0
-goal_distance = 500  # Distancia objetivo en mm
+# Variables para el control PID de la posición en el eje X
+integral_posx = 0
+previous_error_posx = 0
 
 # Activar la detección de blobs de color
 robobo.setActiveBlobs(True, False, False, False)
 
-# Función para limitar la velocidad
-def limit_speed(speed, max_speed):
-    if speed < 0:
-        speed = 0
-    elif speed > max_speed:
-        speed = max_speed
-    return speed
-
 # Función de callback para la detección de color
 def colordetectcallback():
-    global integral, last_error
+    global integral_posx, previous_error_posx  # Usamos variables globales para el control PID de posx
 
     color_blob = robobo.readColorBlob(Color.RED)  # Leer el blob del color especificado
     ir_distance = robobo.readIRSensor(IR.FrontC)  # Leer la distancia al objeto
 
     if color_blob is not None:  # Si se detecta el color
         print(f"Distancia al objeto: {ir_distance} mm")
+        print(f"Posición del objeto (posx): {color_blob.posx}")
 
-        # Calcular el error (diferencia entre la distancia objetivo y la distancia actual)
-        error = goal_distance - ir_distance
+        # Control proporcional para la distancia al objeto
+        error_distance = goal_distance - ir_distance
+        speed_distance = error_distance * kp_distance  # Velocidad de aproximación proporcional
 
-        # Calcular la integral y la derivada del error
-        integral += error
-        derivative = error - last_error
+        # Control PID para la posición en el eje X (posx)
+        error_posx = goal_posx - color_blob.posx
+        integral_posx += error_posx
+        derivative_posx = error_posx - previous_error_posx
+        correction_posx = error_posx * kp_posx + integral_posx * ki_posx + derivative_posx * kd_posx
+        previous_error_posx = error_posx
 
-        # Calcular la corrección del PID
-        correction = kp * error + ki * integral + kd * derivative
+        # Combinar las correcciones de distancia y posición
+        speed_left = speed_distance + correction_posx
+        speed_right = speed_distance - correction_posx
 
-        # Limitar la corrección para evitar velocidades excesivas
-        correction = limit_speed(correction, 50)  # Limitar la corrección a un máximo de 10
-        speed = correction
-        # Ajustar la velocidad de los motores en función de la corrección
-        if 45 <= color_blob.posx <= 55:  
-            print("Objeto de frente")
-            robobo.moveWheels(speed, speed)
-            print(f"Velocidad: {speed}")
-        elif color_blob.posx < 45:  
-            print("Objeto a la derecha")
-            robobo.moveWheels(3, -3)  
-        elif color_blob.posx > 55:
-            print("Objeto a la izquierda")
-            robobo.moveWheels(-3, 3) 
+        # Limitar las velocidades para evitar valores extremos
+        max_speed = 25
+        speed_left = max(min(speed_left, max_speed), -5)
+        speed_right = max(min(speed_right, max_speed), -5)
+
+        # Mover el robot con las velocidades calculadas
+        robobo.moveWheels(speed_left, speed_right)
+        print(f"Velocidades: izquierda={speed_left}, derecha={speed_right}")
+
     else:
         # Si no se detecta el color, seguir girando
-        robobo.moveWheels(10, -10)  # Girar sobre sí mismo
-
-    # Actualizar el último error
-    last_error = error
+        robobo.moveWheels(8, -8)  # Girar sobre sí mismo
 
     # Condición de parada
     if ir_distance > goal_distance:
-        print("Objeto alcanzado, cogiendo el objeto.")
-        robobo.moveWheelsByTime(3, -3, 5)
+        print("Objeto alcanzado, deteniendo motores.")
+        robobo.moveWheels(5,-5)
+        robobo.wait(1)
         robobo.stopMotors()
-
         robobo.disconnect()
 
     robobo.wait(0.001)  # Pequeña pausa para evitar sobrecarga
