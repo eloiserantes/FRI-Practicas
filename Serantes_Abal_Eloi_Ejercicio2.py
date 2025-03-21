@@ -2,36 +2,32 @@ from robobopy.Robobo import Robobo
 from robobopy.utils.Color import Color
 from robobopy.utils.IR import IR
 
-# Configuración inicial
 robobo = Robobo('localhost')
 robobo.connect()
 robobo.moveTiltTo(105, 25)
 robobo.moveWheels(8, -8)
 
-# Parámetros de control
 kp_distance = 0.07  # Ganancia proporcional para la velocidad de aproximación
 kp_posx = 0.2       # Ganancia proporcional para la posición en el eje X
 ki_posx = 0.001    # Ganancia integral para la posición en el eje X
 kd_posx = 0.02      # Ganancia derivativa para la posición en el eje X
-goal_distance = 300  # Distancia objetivo en mm
-goal_posx = 50       # Posición objetivo en el eje X (centro de la cámara)
+goal_distance = 300  # Distancia objetivo 
+goal_posx = 50       # Posición objetivo en el eje X (medio)
 
-# Variables para el control PID de la posición en el eje X
 integral_posx = 0
 previous_error_posx = 0
 
-# Activar la detección de blobs de color
+# Activar la detección de blobs rojo
 robobo.setActiveBlobs(True, False, False, False)
 
-# Función de callback para la detección de color
 def colordetectcallback():
     global integral_posx, previous_error_posx  # Usamos variables globales para el control PID de posx
 
-    color_blob = robobo.readColorBlob(Color.RED)  # Leer el blob del color especificado
+    color_blob = robobo.readColorBlob(Color.RED)  # Leer el blob rojo
     ir_distance = robobo.readIRSensor(IR.FrontC)  # Leer la distancia al objeto
 
-    if color_blob is not None:  # Si se detecta el color
-        print(f"Distancia al objeto: {ir_distance} mm")
+    if color_blob is not None:  
+        print(f"Distancia al objeto: {ir_distance}")
         print(f"Posición del objeto (posx): {color_blob.posx}")
 
         # Control proporcional para la distancia al objeto
@@ -65,7 +61,7 @@ def colordetectcallback():
 
     else:
         # Si no se detecta el color, seguir girando
-        robobo.moveWheels(8, -8)  # Girar sobre sí mismo
+        robobo.moveWheels(8, -8)  
 
     # Condición de parada
     if ir_distance > goal_distance:
@@ -75,10 +71,9 @@ def colordetectcallback():
         robobo.stopMotors()
         robobo.disconnect()
 
-    robobo.wait(0.001)  # Pequeña pausa para evitar sobrecarga
+    robobo.wait(0.001)  
 
-# Asignar la función de callback a la detección de blobs de color
 robobo.whenANewColorBlobIsDetected(colordetectcallback)
 
 while True:
-    robobo.wait(0.001)  # Esperar para evitar sobrecarga
+    robobo.wait(0.001)  
