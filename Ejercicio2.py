@@ -3,7 +3,7 @@ from tkinter import simpledialog, Tk
 import re
 
 # Conectar con Robobo
-robobo = Robobo("localhost")  # Reemplaza con la IP de tu Robobo
+robobo = Robobo("localhost") 
 robobo.connect()
 
 speed = 10 
