@@ -2,8 +2,8 @@ from pynput import keyboard
 from robobopy.Robobo import Robobo
 import time
 
-rob = Robobo("localhost") 
-rob.connect()
+robobo = Robobo("localhost") 
+robobo.connect()
 
 # Variable para rastrear teclas activas
 keys_pressed = set()
@@ -35,7 +35,7 @@ def on_press(key):
         # Solo enviar el comando si ha cambiado
         if comando != ultimo_comando:
             print(mensaje)
-            rob.moveWheels(*comando)
+            robobo.moveWheels(*comando)
             ultimo_comando = comando  # Guardar el último comando enviado
 
     except AttributeError:
@@ -52,7 +52,7 @@ def on_release(key):
         if not keys_pressed:  # Si no hay teclas activas, detener Robobo
             if ultimo_comando != (0, 0):
                 print("Detenido")
-                rob.moveWheels(0, 0)
+                robobo.moveWheels(0, 0)
                 ultimo_comando = (0, 0)
 
     except AttributeError:
