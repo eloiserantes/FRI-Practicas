@@ -64,7 +64,7 @@ listener.start()
 
 # Bucle principal para mantener el programa corriendo
 while True:
-    time.sleep(0.1)  # Evita que el bucle consuma demasiados recursos
+    robobo.wait(0.1)  # Evita que el bucle consuma demasiados recursos
 
 
 
