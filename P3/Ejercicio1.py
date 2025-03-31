@@ -1,6 +1,5 @@
 from pynput import keyboard
 from robobopy.Robobo import Robobo
-import time
 
 robobo = Robobo("localhost") 
 robobo.connect()
