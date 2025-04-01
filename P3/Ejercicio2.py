@@ -6,7 +6,8 @@ import re
 robobo = Robobo("localhost") 
 robobo.connect()
 
-speed = 10 
+speed = 10  
+ultimo_mov = None  # Inicializar último movimiento
 
 # Función para obtener el comando de texto del usuario
 def get_text_command():
@@ -36,36 +37,37 @@ def control_robot(user_response):
     match = re.search(r'velocidad (\d+)', user_response)
     if match:
         speed = int(match.group(1))  # Actualizar la velocidad global
-        print(f"Velocidad actualizada a {speed}")
+        print(f"⚡ Velocidad actualizada a {speed}")
         
         # Si hay un último movimiento, repetirlo con la nueva velocidad
         if ultimo_mov:
-            control_robot(ultimo_mov)
+            print(f"Repitiendo último comando: {ultimo_mov} con nueva velocidad {speed}")
+            control_robot(ultimo_mov)  # Llamamos a la función nuevamente
         return  
 
     if re.search(r'\bno\b', user_response):
         print("Comando negado, Robobo no ejecutará el movimiento.")
         return
 
-    # Guardar el comando de movimiento actual para futuras repeticiones
+    # Guardar el comando de movimiento atual para futuras repeticiones
     ultimo_mov = user_response
 
     # Determinar dirección de movimiento
     if "adelante" in user_response and "izquierda" in user_response:
         print("Moviéndose adelante-izquierda a velocidad", speed)
-        robobo.moveWheels(speed//2, speed)
+        robobo.moveWheels(speed, speed//2)
         
     elif "adelante" in user_response and "derecha" in user_response:
         print("Moviéndose adelante-derecha a velocidad", speed)
-        robobo.moveWheels(speed, speed//2)
+        robobo.moveWheels(speed//2, speed)
 
     elif ("atrás" in user_response or "atras" in user_response) and "izquierda" in user_response:
         print("Moviéndose atrás-izquierda a velocidad", speed)
-        robobo.moveWheels(-speed//2, -speed)
+        robobo.moveWheels(-speed, -speed//2)
 
     elif ("atrás" in user_response or "atras" in user_response) and "derecha" in user_response:
         print("Moviéndose atrás-derecha a velocidad", speed)
-        robobo.moveWheels(-speed, -speed//2)
+        robobo.moveWheels(-speed//2, -speed)
 
     elif "adelante" in user_response:
         print("Moviéndose hacia adelante a velocidad", speed)
@@ -77,17 +79,15 @@ def control_robot(user_response):
 
     elif "izquierda" in user_response:
         print("Girando a la izquierda a velocidad", speed)
-        robobo.moveWheels(-speed//2, speed//2)
+        robobo.moveWheels(speed//2, -speed//2)
 
     elif "derecha" in user_response:
         print("Girando a la derecha a velocidad", speed)
-        robobo.moveWheels(speed//2, -speed//2)
+        robobo.moveWheels(-speed//2, speed//2)
 
     else:
         print("Robobo detenido")
         robobo.moveWheels(0, 0)
-
-
 
 # Bucle principal para recibir comandos
 while True:
@@ -96,4 +96,5 @@ while True:
         print("Deteniendo Robobo")
         robobo.stopMotors()
         robobo.disconnect()
+        break  # Salir del bucle
     control_robot(command)
