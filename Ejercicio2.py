@@ -37,7 +37,7 @@ def control_robot(user_response):
     match = re.search(r'velocidad (\d+)', user_response)
     if match:
         speed = int(match.group(1))  # Actualizar la velocidad global
-        print(f"⚡ Velocidad actualizada a {speed}")
+        print(f"Velocidad actualizada a {speed}")
         
         # Si hay un último movimiento, repetirlo con la nueva velocidad
         if ultimo_mov:
