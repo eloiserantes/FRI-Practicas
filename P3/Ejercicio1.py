@@ -29,7 +29,7 @@ def on_press(key):
             comando = (5, -5)  
             mensaje = "Girando a la derecha"
         else:
-            comando = (0, 0)  
+            comando = robobo.stopMotors()  
             mensaje = "Detenido"
 
         # Solo enviar el comando si ha cambiado
@@ -52,8 +52,8 @@ def on_release(key):
         if not keys_pressed:  # Si no hay teclas activas, detener Robobo
             if ultimo_comando != (0, 0):
                 print("Detenido")
-                robobo.moveWheels(0, 0)
-                ultimo_comando = (0, 0)
+                robobo.stopMotors()
+                ultimo_comando = robobo.stopMotors()
 
     except AttributeError:
         pass

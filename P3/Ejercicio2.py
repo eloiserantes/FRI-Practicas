@@ -24,39 +24,45 @@ def get_text_command():
 
 # Función para interpretar y ejecutar comandos
 def control_robot(user_response):
-    global speed, ultimo_mov  # Usamos variables globales
+    global speed, ultimo_mov
 
     if user_response is None:
         robobo.stopMotors()
-        robobo.disconnect() 
+        robobo.disconnect()
         return
 
-    user_response = user_response.lower().strip()  
+    user_response = user_response.lower().strip()
 
-    # Verificar si el comando es solo para cambiar velocidad
-    match = re.search(r'velocidad (\d+)', user_response)
-    if match:
-        speed = int(match.group(1))  # Actualizar la velocidad global
+    # Detectar comandos como “adelante a velocidad 20”
+    match_velocidad_nueva = re.search(r'a velocidad (\d+)', user_response)
+    if match_velocidad_nueva:
+        speed = int(match_velocidad_nueva.group(1))
+        print(f"Velocidad nueva detectada y actualizada a {speed}")
+        user_response = re.sub(r'a velocidad \d+', '', user_response).strip()
+
+    # Comando explícito solo de velocidad (sin movimiento)
+    match_cambio_velocidad = re.fullmatch(r'velocidad (\d+)', user_response)
+    if match_cambio_velocidad:
+        speed = int(match_cambio_velocidad.group(1))
         print(f"Velocidad actualizada a {speed}")
-        
-        # Si hay un último movimiento, repetirlo con la nueva velocidad
         if ultimo_mov:
             print(f"Repitiendo último comando: {ultimo_mov} con nueva velocidad {speed}")
-            control_robot(ultimo_mov)  # Llamamos a la función nuevamente
-        return  
+            control_robot(ultimo_mov)
+        return
 
-    if re.search(r'\bno\b', user_response):
+    # Comando negado
+    if user_response.startswith("no "):
         print("Comando negado, Robobo no ejecutará el movimiento.")
         return
 
-    # Guardar el comando de movimiento atual para futuras repeticiones
+    # Guardar el comando
     ultimo_mov = user_response
 
-    # Determinar dirección de movimiento
+    # Comandos de movimiento
     if "adelante" in user_response and "izquierda" in user_response:
         print("Moviéndose adelante-izquierda a velocidad", speed)
         robobo.moveWheels(speed, speed//2)
-        
+
     elif "adelante" in user_response and "derecha" in user_response:
         print("Moviéndose adelante-derecha a velocidad", speed)
         robobo.moveWheels(speed//2, speed)
@@ -87,7 +93,7 @@ def control_robot(user_response):
 
     else:
         print("Robobo detenido")
-        robobo.moveWheels(0, 0)
+        robobo.stopMotors()
 
 # Bucle principal para recibir comandos
 while True:
