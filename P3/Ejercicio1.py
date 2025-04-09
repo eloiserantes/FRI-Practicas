@@ -58,13 +58,12 @@ def on_release(key):
     except AttributeError:
         pass
 
-# Iniciar la escucha del teclado en un hilo
+# Iniciar la escucha del teclado
 listener = keyboard.Listener(on_press=on_press, on_release=on_release)
 listener.start()
 
-# Bucle principal para mantener el programa corriendo
 while True:
-    robobo.wait(0.1)  # Evita que el bucle consuma demasiados recursos
+    robobo.wait(0.1)  
 
 
 

@@ -102,5 +102,5 @@ while True:
         print("Deteniendo Robobo")
         robobo.stopMotors()
         robobo.disconnect()
-        break  # Salir del bucle
+        break
     control_robot(command)
